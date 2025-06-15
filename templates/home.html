@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DEMURE Fragrances</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-white text-black font-sans">
+
+    <section class="flex flex-col-reverse lg:flex-row items-center justify-between min-h-screen px-6 lg:px-20">
+        <div class="max-w-xl text-center lg:text-left">
+            <h1 class="text-5xl font-bold mb-6">DEMURE<br>Fragrances</h1>
+            <p class="text-lg text-gray-700">Elegant. Mysterious. Unforgettable.
+                Discover the scent that defines your presence.</p>
+        </div>
+        <div class="w-full lg:w-1/2 flex justify-center">
+            <img src="{% static 'images/home.jpeg' %}" alt="Perfume Bottle" class="w-80 rounded-lg shadow-lg">
+        </div>
+    </section>
+
+</body>
+
+</html>
