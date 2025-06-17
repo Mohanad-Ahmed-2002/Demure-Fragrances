@@ -14,6 +14,13 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import os
+import cloudinary
+
+cloudinary.config( 
+  cloud_name = config('CLOUDINARY_CLOUD_NAME'), 
+  api_key = config('CLOUDINARY_API_KEY'), 
+  api_secret = config('CLOUDINARY_API_SECRET') 
+)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'shop',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +145,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
