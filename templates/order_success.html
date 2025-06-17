@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="min-h-[80vh] bg-[#f9f9f6] flex items-center justify-center px-4 sm:px-6 lg:px-10 py-16">
+    <div class="bg-white shadow-xl rounded-2xl p-8 sm:p-10 max-w-2xl w-full space-y-8">
+
+        <!-- الأيقونة والعنوان -->
+        <div class="text-center space-y-4">
+            <div class="text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2l4 -4m6 2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Order Confirmed</h1>
+            <p class="text-gray-600 text-base sm:text-lg leading-relaxed">Thank you, <span class="font-semibold">{{ order.full_name }}</span>. Your order has been placed successfully.</p>
+        </div>
+
+        <!-- ملخص الطلب -->
+        <div class="bg-gray-50 rounded-xl p-6 border border-yellow-300">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Order Summary</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700">
+
+                <div><span class="font-medium">Order ID:</span> {{ order.id }}</div>
+                <div><span class="font-medium">Phone:</span> {{ order.phone }}</div>
+                <div><span class="font-medium">City:</span> {{ order.city }}</div>
+                <div><span class="font-medium">Shipping Fee:</span> LE {{ order.shipping_fee }}</div>
+                <div><span class="font-medium">Total (with Shipping):</span> LE {{ order.final_total }}</div>
+                <div><span class="font-medium">Payment Method:</span> {{ order.get_payment_method_display }}</div>
+
+                {% if order.notes %}
+                <div class="sm:col-span-2"><span class="font-medium">Notes:</span> {{ order.notes }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- زر العودة -->
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="relative inline-flex items-center gap-2 px-8 py-3 rounded-full 
+                       bg-black text-yellow-400 text-sm font-bold uppercase tracking-widest shadow-md
+                       hover:bg-yellow-400 hover:text-black hover:scale-105 transition-all duration-500 ease-out 
+                       overflow-hidden group">
+                <span
+                    class="absolute inset-0 bg-yellow-500 opacity-0 group-hover:opacity-20 transition duration-500 rounded-full"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 z-10" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="z-10">Back to Home</span>
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

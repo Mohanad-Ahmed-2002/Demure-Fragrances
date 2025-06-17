@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-10">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- ملخص الطلب -->
+        <div class="bg-white shadow-lg rounded-2xl p-6">
+            <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
+            <div class="space-y-3">
+                {% for item in products %}
+                <div class="flex justify-between border-b pb-2">
+                    <div>
+                        <p class="font-medium">{{ item.product.name }}</p>
+                        <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
+                    </div>
+                    <p>LE {{ item.total }}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4 text-gray-800 font-semibold space-y-1">
+                <div class="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span>LE {{ grand_total }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Shipping Fee:</span>
+                    <span id="summary-shipping-fee">LE 0.00</span>
+                </div>
+                <div class="flex justify-between hidden" id="summary-discount">
+                    <span class="text-green-700">Discount:</span>
+                    <span class="text-green-700">- LE <span id="discount-amount">0.00</span></span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Total:</span>
+                    <span id="summary-final-total">LE {{ grand_total }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- الفورم مع حدود -->
+        <div class="bg-white shadow-lg rounded-2xl p-6 border-2 border-yellow-400">
+            <h2 class="text-2xl font-bold mb-4">Delivery & Payment</h2>
+            <form method="POST" id="checkout-form" class="space-y-5">
+                {% csrf_token %}
+
+                <!-- الحقول من الفورم -->
+                {{ form.full_name.label_tag }} {{ form.full_name }}
+                {{ form.phone.label_tag }} {{ form.phone }}
+                {{ form.city.label_tag }} {{ form.city }}
+                {{ form.address.label_tag }} {{ form.address }}
+                {{ form.notes.label_tag }} {{ form.notes }}
+                {{ form.promo_code.label_tag }} {{ form.promo_code }}
+
+                <!-- طريقة الدفع -->
+                <label class="block text-sm font-medium">Payment Method:</label>
+                <div class="space-y-2">
+                    <label><input type="radio" name="payment_method" value="vodafone" onchange="togglePaymentFields()">
+                        Vodafone Cash</label><br>
+                    <label><input type="radio" name="payment_method" value="instapay" onchange="togglePaymentFields()">
+                        InstaPay</label><br>
+                    <label><input type="radio" name="payment_method" value="Cash on Delivery" checked
+                            onchange="togglePaymentFields()"> Cash on Delivery</label>
+                </div>
+
+                <!-- تفاصيل طرق الدفع -->
+                <div id="vodafone-details" class="hidden text-sm text-gray-600 bg-gray-100 p-3 rounded">
+                    Send to Vodafone Number: <strong>01000109327</strong>
+                </div>
+                <div id="instapay-details" class="hidden text-sm text-gray-600 bg-gray-100 p-3 rounded">
+                    InstaPay Account: <strong>nadermuhamed00@instapay</strong>
+                </div>
+
+                <!-- الإجمالي -->
+                <div class="pt-4 text-sm text-gray-700">
+                    <p>Shipping: <span id="shipping-fee">LE 0.00</span></p>
+                    <p class="text-lg font-bold">Total: <span id="final-total">LE {{ grand_total }}</span></p>
+                </div>
+
+                <button type="submit" class="relative inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full 
+                           bg-black text-yellow-400 text-sm font-bold uppercase tracking-widest shadow-md
+                           hover:bg-yellow-400 hover:text-black hover:scale-105 transition-all duration-500 ease-out 
+                           overflow-hidden group w-full mt-4">
+                
+                    <!-- خلفية مضيئة داخل الزر -->
+                    <span
+                        class="absolute inset-0 bg-yellow-500 opacity-0 group-hover:opacity-20 transition duration-500 rounded-full"></span>
+                
+                    <!-- أيقونة التأكيد -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                
+                    <!-- النص -->
+                    <span class="z-10">Confirm Order</span>
+                </button>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<script id="cities-data" type="application/json">
+  {{ cities_json|safe }}
+</script>
+
+<script>
+    const citySelect = document.getElementById("id_city");
+    const promoInput = document.getElementById("id_promo_code");
+    const shippingFeeDisplay = document.getElementById("shipping-fee");
+    const finalTotalDisplay = document.getElementById("final-total");
+    const summaryShippingFee = document.getElementById("summary-shipping-fee");
+    const summaryFinalTotal = document.getElementById("summary-final-total");
+    const subtotal = parseFloat("{{ grand_total }}");
+    const citiesData = JSON.parse(document.getElementById("cities-data").textContent);
+    let currentDiscount = 0;
+
+    function updateTotal() {
+        const cityId = citySelect.value;
+        const shipping = parseFloat(citiesData[cityId] || 0);
+        const final = subtotal + shipping - currentDiscount;
+
+        shippingFeeDisplay.textContent = `LE ${shipping.toFixed(2)}`;
+        finalTotalDisplay.textContent = `LE ${final.toFixed(2)}`;
+        summaryShippingFee.textContent = `LE ${shipping.toFixed(2)}`;
+        summaryFinalTotal.textContent = `LE ${final.toFixed(2)}`;
+
+        if (currentDiscount > 0) {
+            document.getElementById("summary-discount").classList.remove("hidden");
+            document.getElementById("discount-amount").textContent = currentDiscount.toFixed(2);
+        } else {
+            document.getElementById("summary-discount").classList.add("hidden");
+        }
+    }
+
+    function togglePaymentFields() {
+        document.getElementById("vodafone-details").classList.add("hidden");
+        document.getElementById("instapay-details").classList.add("hidden");
+        const method = document.querySelector('input[name="payment_method"]:checked').value;
+        if (method === "vodafone") document.getElementById("vodafone-details").classList.remove("hidden");
+        if (method === "instapay") document.getElementById("instapay-details").classList.remove("hidden");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateTotal();
+        togglePaymentFields();
+
+        citySelect.addEventListener("change", updateTotal);
+        promoInput.addEventListener("input", () => {
+            const code = promoInput.value.trim();
+            if (!code) {
+                currentDiscount = 0;
+                updateTotal();
+                return;
+            }
+            fetch(`/api/validate-promo/?code=${code}`)
+                .then(res => res.json())
+                .then(data => {
+                    currentDiscount = data.valid ? parseFloat(data.discount) : 0;
+                    updateTotal();
+                });
+        });
+    });
+</script>
+{% endblock %}

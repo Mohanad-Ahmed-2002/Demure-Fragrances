@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="bg-[#f9f9f6] px-4 sm:px-6 lg:px-10 py-16 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- العنوان -->
+        <h2
+            class="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-14 logo-font text-black tracking-wide leading-snug">
+            Your <span class="text-yellow-500">Favourites</span>
+        </h2>
+
+        {% if products %}
+        <!-- شبكة المنتجات -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
+            {% for product in products %}
+            <div
+                class="group relative flex flex-col items-center text-center space-y-4 p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition">
+
+                <!-- صورة المنتج -->
+                <div
+                    class="w-full aspect-[3/4] overflow-hidden rounded-xl shadow-sm transition transform group-hover:scale-[1.02]">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                        class="w-full h-full object-contain rounded-xl group-hover:brightness-90 transition duration-300" />
+                </div>
+
+                <!-- اسم وسعر -->
+                <h3 class="text-xl font-bold text-gray-800">{{ product.name }}</h3>
+                <p class="text-black text-md font-medium">LE {{ product.price }}</p>
+
+                <!-- الأزرار -->
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <a href="{% url 'add_to_cart' product.id %}"
+                        class="bg-black text-white text-sm px-6 py-2 rounded-full uppercase font-medium hover:bg-gray-900 transition">
+                        Add to Cart
+                    </a>
+
+                    <a href="{% url 'remove_from_favourites' product.id %}"
+                        class="bg-red-500 text-white text-sm px-6 py-2 rounded-full uppercase font-medium hover:bg-red-600 transition">
+                        Remove
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-gray-500 text-lg mt-8">You have no favourite products yet.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
