@@ -38,15 +38,20 @@ def buy_now(request, product_id):
     quantity = int(request.POST.get('quantity', 1))
     cart = request.session.get('cart', {})
 
-    # خالي السلة فاضية (عشان Buy Now يعني طلب سريع)
-    cart = {}
+    if not isinstance(cart, dict):
+        cart = {}
 
-    # ضيف المنتج المحدد بالكمية
-    cart[str(product_id)] = quantity
+    # ✅ نضيف المنتج المطلوب (أو نحدث كميته)
+    if str(product_id) in cart:
+        cart[str(product_id)] += quantity
+    else:
+        cart[str(product_id)] = quantity
+
     request.session['cart'] = cart
 
-    # حول المستخدم على صفحة الدفع
+    # ✅ بعد الإضافة يروح على صفحة Checkout
     return redirect('checkout')
+
 
 def add_to_cart(request, product_id):
     if request.method == 'POST':

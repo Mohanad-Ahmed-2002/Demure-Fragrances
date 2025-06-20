@@ -18,24 +18,42 @@
             <p class="text-2xl font-bold text-yellow-600">LE {{ product.price }}</p>
 
             <!-- الكمية و الأزرار -->
-            <form method="POST" action="{% url 'add_to_cart' product.id %}" class="space-y-4">
+            <!-- Input الكمية الأساسي -->
+            <div class="flex items-center space-x-4">
+                <label for="quantity" class="font-medium">Quantity:</label>
+                <input type="number" name="quantity" id="quantity" value="1" min="1" class="border px-3 py-1 w-20 rounded">
+            </div>
+            
+            <!-- زر Add to Cart -->
+            <form method="POST" action="{% url 'add_to_cart' product.id %}">
                 {% csrf_token %}
-                <div class="flex items-center space-x-4">
-                    <label for="quantity" class="font-medium">Quantity:</label>
-                    <input type="number" name="quantity" id="quantity" value="1" min="1"
-                        class="border px-3 py-1 w-20 rounded">
-                </div>
-
-                <div class="flex space-x-4">
-                    <button type="submit" class="bg-black  hover:bg-yellow-600 text-white px-5 py-2 rounded">
-                        Add to Cart
-                    </button>
-                    <a href="{% url 'buy_now' product.id %}?quantity=1"
-                        class="bg-yellow-500 hover:bg-amber-700 text-white px-5 py-2 rounded">
-                        Buy It Now
-                    </a>
-                </div>
+                <input type="hidden" name="quantity" id="addToCartQty" value="1">
+                <button type="submit" class="bg-black text-white hover:bg-yellow-600 text-white px-5 py-2 rounded">
+                    Add to Cart
+                </button>
             </form>
+            
+            <!-- زر Buy It Now -->
+            <form method="POST" action="{% url 'buy_now' product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" id="buyNowQty" value="1">
+                <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2 rounded">
+                    Buy It Now
+                </button>
+            </form>
+            
+            <!-- ربط الكميتين -->
+            <script>
+                const qtyInput = document.getElementById("quantity");
+                const addToCartQty = document.getElementById("addToCartQty");
+                const buyNowQty = document.getElementById("buyNowQty");
+
+                qtyInput.addEventListener("input", function () {
+                    addToCartQty.value = qtyInput.value;
+                    buyNowQty.value = qtyInput.value;
+                });
+            </script>
+
         </div>
     </div>
 </section>
