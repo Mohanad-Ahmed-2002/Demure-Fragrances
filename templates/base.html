@@ -44,7 +44,9 @@
 
             <!-- Mobile Icons + Menu Button -->
             <div class="flex items-center space-x-4 md:hidden">
-                <a href="{% url 'favourites' %}" class="hover:text-gray-400" title="Favorites">❤️</a>
+                <a href="{% url 'favourites' %}" class="text-[#FFD700] hover:text-[#FFC300]" title="Favorites">
+                    <i class="fas fa-heart"></i>
+                </a>
                 <a href="{% url 'cart' %}" class="relative">
                     <i class="fas fa-shopping-cart text-xl"></i>
                     <span
