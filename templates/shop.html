@@ -20,31 +20,29 @@
                 <!-- صورة المنتج -->
                 <div
                     class="w-full aspect-[3/4] overflow-hidden rounded-xl shadow-sm transition duration-300 ease-in-out transform group-hover:scale-[1.02] group-hover:shadow-md">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                        class="w-full h-full object-contain rounded-xl group-hover:brightness-90 transition duration-300" />
+                    <a href="{% url 'product_detail' product.id %}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                            class="w-full h-full object-contain rounded-xl group-hover:brightness-90 transition duration-300" />
+
+                    </a>
                 </div>
 
                 <!-- اسم ووصف المنتج -->
                 <div class="w-full space-y-2">
-                    <h3 class="text-xl font-bold text-gray-800">{{ product.name }}</h3>
-                    <p class="text-sm text-gray-600 line-clamp-2 px-2">{{ product.description }}</p>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+                    </h3>
                 </div>
-
                 <!-- السعر -->
                 <p class="text-black text-md font-medium tracking-wide">LE {{ product.price }}</p>
 
                 <!-- الزر -->
                 <!-- الأزرار معًا -->
                 <div class="flex items-center justify-center gap-4 mt-2">
-                    <!-- Add to Cart -->
-                    <button onclick="addToCart('{{ product.id }}')"
-                        class="bg-black text-white text-sm px-6 py-2 rounded-full tracking-wider font-medium uppercase hover:bg-gray-900 transition-all duration-300">
-                        Add to Cart
-                    </button>
                 
                     <!-- Add to Favourites -->
                     <a href="{% url 'add_to_favourites' product.id %}"
-                        class="bg-white border border-yellow-400 text-red-500 rounded-full p-2 hover:bg-yellow-50 transition duration-300"
+                        class="bg-white border border-yellow-400 text-yellow-500 rounded-full p-2 hover:bg-yellow-50 transition duration-300"
                         title="Add to Favourites">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 

@@ -25,6 +25,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
     path('shop/', views.shop, name='shop'),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('buy-now/<int:product_id>/', views.buy_now, name='buy_now'),
     path('cart/', views.cart, name='cart'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),  # ✅ هنا
     path('remove-from-cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
@@ -37,6 +39,7 @@ urlpatterns = [
     path('favourites/', views.favourites_view, name='favourites'),
     path('add-to-favourites/<int:product_id>/', views.add_to_favourites, name='add_to_favourites'),
     path('remove-from-favourites/<int:product_id>/', views.remove_from_favourites, name='remove_from_favourites'),
+    path('print-invoice/<int:order_id>/', views.print_invoice, name='print_invoice'),
 
 
 

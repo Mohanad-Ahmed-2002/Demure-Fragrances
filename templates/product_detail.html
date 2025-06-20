@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="bg-white py-12 px-6 lg:px-20 text-gray-800">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+        <!-- صورة المنتج -->
+        <div>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full rounded-xl shadow-md">
+        </div>
+
+        <!-- تفاصيل المنتج -->
+        <div class="space-y-4">
+            <h1 class="text-3xl font-extrabold text-gray-900">{{ product.name }}</h1>
+            <p class="text-gray-600">{{ product.sub_title }}</p>
+            <p class="text-gray-500">{{ product.description }}</p>
+            <p class="text-black">{{ product.description_2}}</p>
+            <p class="text-2xl font-bold text-yellow-600">LE {{ product.price }}</p>
+
+            <!-- الكمية و الأزرار -->
+            <form method="POST" action="{% url 'add_to_cart' product.id %}" class="space-y-4">
+                {% csrf_token %}
+                <div class="flex items-center space-x-4">
+                    <label for="quantity" class="font-medium">Quantity:</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1"
+                        class="border px-3 py-1 w-20 rounded">
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="submit" class="bg-black  hover:bg-yellow-600 text-white px-5 py-2 rounded">
+                        Add to Cart
+                    </button>
+                    <a href="{% url 'buy_now' product.id %}?quantity=1"
+                        class="bg-yellow-500 hover:bg-amber-700 text-white px-5 py-2 rounded">
+                        Buy It Now
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-4 right-4 bg-black text-yellow-500 px-4 py-2 rounded shadow-lg hidden z-50">
+    ✅ Product added to cart
+</div>
+
+<script>
+    const toast = document.getElementById("toast");
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("added") === "true") {
+        toast.classList.remove("hidden");
+        setTimeout(() => {
+            toast.classList.add("hidden");
+        }, 3000);
+    }
+</script>
+{% endblock %}

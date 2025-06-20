@@ -68,15 +68,15 @@
                 <a href="{% url 'home' %}" class="hover:text-gray-400 text-sm uppercase">Home</a>
                 <a href="{% url 'shop' %}" class="hover:text-gray-400 text-sm uppercase">Shop</a>
                 <a href="{% url 'contact' %}" class="hover:text-gray-400 text-sm uppercase">Contact Us</a>
-                <a href="{% url 'favourites' %}" class="hover:text-gray-400" title="Favorites">❤️</a>
+                <a href="{% url 'favourites' %}" class="text-[#FFD700] hover:text-[#FFC300]" title="Favorites">
+                    <i class="fas fa-heart"></i>
+                </a>
                 <a href="{% url 'cart' %}" class="relative">
                     <i class="fas fa-shopping-cart text-xl"></i>
                     <span
                         class="cart-count {% if cart_count == 0 %}hidden{% endif %} bg-yellow-500 text-white text-xs rounded-full px-2 py-0.5">
                         {{ cart_count|default:"0" }}
                     </span>
-
-
                 </a>
 
             </div>

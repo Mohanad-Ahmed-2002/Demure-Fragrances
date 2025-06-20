@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import CheckoutForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+from django.views.decorators.http import require_POST
 
 
 def home(request):
@@ -28,20 +29,45 @@ def shop(request):
     products = Product.objects.all()
     return render(request, 'shop.html', {'products': products})
 
-def add_to_cart(request, product_id):
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'product_detail.html', {'product': product})
+
+@require_POST
+def buy_now(request, product_id):
+    quantity = int(request.POST.get('quantity', 1))
     cart = request.session.get('cart', {})
 
-    # نتأكد إنها dict فعلًا
-    if not isinstance(cart, dict):
-        cart = {}
+    # خالي السلة فاضية (عشان Buy Now يعني طلب سريع)
+    cart = {}
 
-    if str(product_id) in cart:
-        cart[str(product_id)] += 1
-    else:
-        cart[str(product_id)] = 1
-
+    # ضيف المنتج المحدد بالكمية
+    cart[str(product_id)] = quantity
     request.session['cart'] = cart
-    return redirect('cart')
+
+    # حول المستخدم على صفحة الدفع
+    return redirect('checkout')
+
+def add_to_cart(request, product_id):
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        cart = request.session.get('cart', {})
+
+        if not isinstance(cart, dict):
+            cart = {}
+
+        if str(product_id) in cart:
+            cart[str(product_id)] += quantity
+        else:
+            cart[str(product_id)] = quantity
+
+        request.session['cart'] = cart
+
+        # ✅ رجوع لنفس صفحة المنتج مع باراميتر added
+        return redirect(f'/product/{product_id}/?added=true')
+
+    return redirect('shop')
+
 
 def cart(request):
     cart = request.session.get('cart', {})
@@ -191,3 +217,7 @@ def validate_promo(request):
 def order_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, 'order_success.html', {'order': order})
+
+def print_invoice(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'invoice.html', {'order': order})
