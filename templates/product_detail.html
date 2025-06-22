@@ -19,10 +19,14 @@
 
             <!-- الكمية و الأزرار -->
             <!-- Input الكمية الأساسي -->
-            <div class="flex items-center space-x-4">
-                <label for="quantity" class="font-medium">Quantity:</label>
-                <input type="number" name="quantity" id="quantity" value="1" min="1" class="border px-3 py-1 w-20 rounded">
+            <!-- الكمية الجديدة بأزرار + و - -->
+            <div class="flex items-center space-x-2">
+                <label class="font-medium">Quantity:</label>
+                <button type="button" id="decreaseQty" class="bg-gray-200 px-2 py-1 rounded">−</button>
+                <span id="quantityDisplay" class="px-3">1</span>
+                <button type="button" id="increaseQty" class="bg-gray-200 px-2 py-1 rounded">+</button>
             </div>
+
             
             <!-- زر Add to Cart -->
             <form method="POST" action="{% url 'add_to_cart' product.id %}">
@@ -44,15 +48,30 @@
             
             <!-- ربط الكميتين -->
             <script>
-                const qtyInput = document.getElementById("quantity");
+                let quantity = 1;
+                const quantityDisplay = document.getElementById("quantityDisplay");
                 const addToCartQty = document.getElementById("addToCartQty");
                 const buyNowQty = document.getElementById("buyNowQty");
 
-                qtyInput.addEventListener("input", function () {
-                    addToCartQty.value = qtyInput.value;
-                    buyNowQty.value = qtyInput.value;
+                document.getElementById("increaseQty").addEventListener("click", () => {
+                    quantity++;
+                    updateQuantity();
                 });
+
+                document.getElementById("decreaseQty").addEventListener("click", () => {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateQuantity();
+                    }
+                });
+
+                function updateQuantity() {
+                    quantityDisplay.textContent = quantity;
+                    addToCartQty.value = quantity;
+                    buyNowQty.value = quantity;
+                }
             </script>
+            
 
         </div>
     </div>
@@ -62,6 +81,8 @@
 <div id="toast" class="fixed bottom-4 right-4 bg-black text-yellow-500 px-4 py-2 rounded shadow-lg hidden z-50">
     ✅ Product added to cart
 </div>
+
+
 
 <script>
     const toast = document.getElementById("toast");
